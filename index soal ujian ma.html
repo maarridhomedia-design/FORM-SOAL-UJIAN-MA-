@@ -1,0 +1,1188 @@
+<!doctype html>
+<html lang="id" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Ujian - Madrasah Aliyah Ar-Ridho</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <script src="/_sdk/data_sdk.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Cormorant+Garamond:wght@500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      .font-serif {
+        font-family: "Cormorant Garamond", serif;
+      }
+
+      .gradient-bg {
+        background: linear-gradient(
+          135deg,
+          #0f172a 0%,
+          #1e293b 50%,
+          #0f172a 100%
+        );
+      }
+
+      .card-premium {
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .header-premium {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        border-bottom: 3px solid #3b82f6;
+      }
+
+      .option-btn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid #e2e8f0;
+        background: #ffffff;
+      }
+
+      .option-btn:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        transform: translateX(4px);
+      }
+
+      .option-btn.selected {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border-color: #2563eb;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+
+      .progress-bar {
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+      }
+
+      .badge-info {
+        background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%);
+        color: #3730a3;
+        border: 1px solid #c7d2fe;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #f1f5f9;
+        color: #334155;
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+      }
+
+      .btn-secondary:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+      }
+
+      .btn-logout {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      .btn-logout:hover {
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .btn-delete {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+      }
+
+      .btn-delete:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      }
+
+      .btn-edit {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+      }
+
+      .btn-edit:hover {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      }
+
+      .correct-indicator {
+        border-left: 4px solid #10b981;
+        background: linear-gradient(
+          to right,
+          rgba(16, 185, 129, 0.1),
+          transparent
+        );
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      .option-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .correct-radio {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        accent-color: #10b981;
+      }
+
+      .question-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .question-card:hover {
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        border-color: #3b82f6;
+      }
+    </style>
+    <style>
+      body {
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body class="h-full gradient-bg">
+    <div id="app" class="h-full overflow-auto">
+      <!-- MAIN MENU SCREEN -->
+      <div
+        id="mainMenuScreen"
+        class="min-h-full flex items-center justify-center p-4 py-8"
+      >
+        <div class="w-full max-w-2xl animate-fade-in">
+          <div class="text-center mb-12">
+            <div
+              class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-xl mb-6"
+            >
+              <svg
+                class="w-10 h-10 text-white"
+                fill="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+                />
+              </svg>
+            </div>
+            <h1 id="schoolName" class="text-3xl font-bold text-white mb-2">
+              Madrasah Aliyah Ar-Ridho
+            </h1>
+            <p id="schoolMotto" class="text-blue-200 text-sm font-medium">
+              Sistem Ujian &amp; Manajemen Soal
+            </p>
+          </div>
+          <div class="card-premium rounded-2xl p-8 shadow-2xl space-y-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">
+              Pilih Menu
+            </h2>
+            <button
+              onclick="goToCreateQuestion()"
+              class="w-full btn-primary py-4 px-6 font-semibold rounded-lg shadow-lg flex items-center justify-center gap-3 text-lg"
+            >
+              ➕ Buat Soal Baru
+            </button>
+            <button
+              onclick="goToManageQuestion()"
+              class="w-full btn-secondary py-4 px-6 font-semibold rounded-lg shadow-lg flex items-center justify-center gap-3 text-lg border-2"
+            >
+              ⚙️ Kelola Soal
+            </button>
+            <button
+              onclick="goToExam()"
+              class="w-full btn-secondary py-4 px-6 font-semibold rounded-lg shadow-lg flex items-center justify-center gap-3 text-lg border-2"
+            >
+              📝 Mulai Ujian
+            </button>
+          </div>
+          <div class="text-center mt-8">
+            <p class="text-blue-200 text-sm">
+              Kelola soal ujian dan data peserta dengan mudah
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- CREATE QUESTION SCREEN -->
+      <div id="createQuestionScreen" class="min-h-full hidden">
+        <div class="header-premium sticky top-0 z-40 shadow-lg">
+          <div
+            class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center"
+          >
+            <h2 class="text-2xl font-bold text-white">Buat Soal Baru</h2>
+            <button
+              onclick="goToMainMenu()"
+              class="btn-secondary px-4 py-2 rounded-lg font-semibold"
+            >
+              ← Kembali
+            </button>
+          </div>
+        </div>
+        <div class="max-w-4xl mx-auto px-4 py-8 pb-12">
+          <div class="card-premium rounded-2xl p-8 shadow-xl animate-fade-in">
+            <form id="createQuestionForm" class="space-y-6">
+              <!-- Mata Pelajaran -->
+              <div>
+                <label
+                  for="createSubject"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  <span class="text-red-500">*</span> Mata Pelajaran
+                </label>
+                <select
+                  id="createSubject"
+                  required
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-700 bg-white appearance-none cursor-pointer"
+                  style="
+                    background-image: url(&quot;data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23334155%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22></polyline></svg>&quot;);
+                    background-repeat: no-repeat;
+                    background-position: right 8px center;
+                    background-size: 20px;
+                    padding-right: 32px;
+                  "
+                >
+                  <option value="">Pilih Mata Pelajaran</option>
+                  <option value="Matematika">📐 Matematika</option>
+                  <option value="Bahasa Indonesia">📖 Bahasa Indonesia</option>
+                  <option value="Bahasa Inggris">🌐 Bahasa Inggris</option>
+                  <option value="Fisika">⚛️ Fisika</option>
+                  <option value="Kimia">🧪 Kimia</option>
+                  <option value="Biologi">🔬 Biologi</option>
+                  <option value="Sejarah">📚 Sejarah</option>
+                  <option value="Fiqih">☪️ Fiqih</option>
+                  <option value="Akidah Akhlak">✨ Akidah Akhlak</option>
+                  <option value="Al-Quran Hadits">📕 Al-Quran Hadits</option>
+                </select>
+              </div>
+              <!-- Teks Soal -->
+              <div>
+                <label
+                  for="createQuestion"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  <span class="text-red-500">*</span> Teks Soal
+                </label>
+                <textarea
+                  id="createQuestion"
+                  required
+                  placeholder="Masukkan pertanyaan soal di sini..."
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-700 placeholder-gray-400 resize-none h-24"
+                ></textarea>
+              </div>
+              <!-- Pilihan Ganda -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-4">
+                  <span class="text-red-500">*</span> Opsi Jawaban (Pilih 1
+                  jawaban benar)
+                </label>
+                <div class="space-y-3">
+                  <div id="optionsContainer" class="space-y-3">
+                    <div class="option-input-wrapper">
+                      <input
+                        type="radio"
+                        name="correctAnswer"
+                        value="0"
+                        class="correct-radio"
+                        checked
+                      />
+                      <input
+                        type="text"
+                        class="option-input flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-700 placeholder-gray-400"
+                        placeholder="Opsi A"
+                        required
+                      />
+                    </div>
+                    <div class="option-input-wrapper">
+                      <input
+                        type="radio"
+                        name="correctAnswer"
+                        value="1"
+                        class="correct-radio"
+                      />
+                      <input
+                        type="text"
+                        class="option-input flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-700 placeholder-gray-400"
+                        placeholder="Opsi C"
+                        required
+                      />
+                    </div>
+                    <div class="option-input-wrapper">
+                      <input
+                        type="radio"
+                        name="correctAnswer"
+                        value="2"
+                        class="correct-radio"
+                      />
+                      <input
+                        type="text"
+                        class="option-input flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-700 placeholder-gray-400"
+                        placeholder="Opsi D"
+                        required
+                      />
+                    </div>
+                    <div class="option-input-wrapper">
+                      <input
+                        type="radio"
+                        name="correctAnswer"
+                        value="3"
+                        class="correct-radio"
+                      />
+                      <input
+                        type="text"
+                        class="option-input flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-700 placeholder-gray-400"
+                        placeholder="Opsi E"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-3">
+                  💡 Pilih salah satu radio button untuk menentukan jawaban yang
+                  benar
+                </p>
+              </div>
+              <!-- Action Buttons -->
+              <div class="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  type="button"
+                  onclick="goToMainMenu()"
+                  class="btn-secondary flex-1 py-3 px-4 font-semibold rounded-lg"
+                >
+                  ← Batal
+                </button>
+                <button
+                  type="submit"
+                  class="btn-primary flex-1 py-3 px-4 font-semibold rounded-lg"
+                >
+                  ✅ Simpan Soal
+                </button>
+              </div>
+            </form>
+            <div
+              id="createLoadingSpinner"
+              class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg z-50"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-5 h-5 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin"
+                ></div>
+                <span class="text-gray-700 font-semibold">Menyimpan...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- MANAGE QUESTION SCREEN -->
+      <div id="manageQuestionScreen" class="min-h-full hidden">
+        <div class="header-premium sticky top-0 z-40 shadow-lg">
+          <div
+            class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center flex-wrap gap-4"
+          >
+            <h2 class="text-2xl font-bold text-white">
+              Kelola Soal (<span id="questionCount">0</span>)
+            </h2>
+            <button
+              onclick="goToMainMenu()"
+              class="btn-secondary px-4 py-2 rounded-lg font-semibold"
+            >
+              ← Kembali
+            </button>
+          </div>
+        </div>
+        <div class="max-w-5xl mx-auto px-4 py-8 pb-12">
+          <div id="questionsListContainer" class="space-y-4">
+            <div class="card-premium rounded-2xl p-8 text-center">
+              <p class="text-gray-500 font-medium">
+                📭 Tidak ada soal.
+                <button
+                  onclick="goToCreateQuestion()"
+                  class="text-blue-600 font-bold hover:underline"
+                >
+                  Buat soal baru
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- LOGIN EXAM SCREEN -->
+      <div
+        id="loginExamScreen"
+        class="min-h-full hidden flex items-center justify-center p-4 py-8"
+      >
+        <div class="w-full max-w-md animate-fade-in">
+          <div class="text-center mb-8">
+            <div
+              class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-xl mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-white"
+                fill="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+                />
+              </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">
+              Login Peserta Ujian
+            </h1>
+          </div>
+          <div class="card-premium rounded-2xl p-8 shadow-2xl">
+            <form id="loginExamForm" class="space-y-5">
+              <div>
+                <label
+                  for="examUsername"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  <span class="text-red-500">*</span> Nama Lengkap
+                </label>
+                <input
+                  type="text"
+                  id="examUsername"
+                  required
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-700 placeholder-gray-400"
+                  placeholder="Masukkan nama lengkap Anda"
+                />
+              </div>
+              <div>
+                <label
+                  for="examSubject"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  <span class="text-red-500">*</span> Mata Pelajaran
+                </label>
+                <select
+                  id="examSubject"
+                  required
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-700 bg-white appearance-none cursor-pointer"
+                  style="
+                    background-image: url(&quot;data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23334155%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22></polyline></svg>&quot;);
+                    background-repeat: no-repeat;
+                    background-position: right 8px center;
+                    background-size: 20px;
+                    padding-right: 32px;
+                  "
+                >
+                  <option value="">Pilih Mata Pelajaran</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  for="examClass"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  <span class="text-red-500">*</span> Kelas
+                </label>
+                <select
+                  id="examClass"
+                  required
+                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none text-gray-700 bg-white appearance-none cursor-pointer"
+                  style="
+                    background-image: url(&quot;data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23334155%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22></polyline></svg>&quot;);
+                    background-repeat: no-repeat;
+                    background-position: right 8px center;
+                    background-size: 20px;
+                    padding-right: 32px;
+                  "
+                >
+                  <option value="">Pilih Kelas</option>
+                  <option value="X IPA">Kelas X IPA</option>
+                  <option value="X IPS">Kelas X IPS</option>
+                  <option value="XI IPA">Kelas XI IPA</option>
+                  <option value="XI IPS">Kelas XI IPS</option>
+                  <option value="XII IPA">Kelas XII IPA</option>
+                  <option value="XII IPS">Kelas XII IPS</option>
+                </select>
+              </div>
+              <button
+                type="submit"
+                class="btn-primary w-full py-3 px-4 font-semibold rounded-xl shadow-lg mt-8"
+              >
+                🚀 Mulai Ujian
+              </button>
+            </form>
+            <button
+              onclick="goToMainMenu()"
+              class="w-full btn-secondary py-3 px-4 font-semibold rounded-xl shadow-lg mt-4"
+            >
+              ← Kembali
+            </button>
+            <p class="text-xs text-gray-500 text-center mt-6">
+              📋 Pastikan semua data sudah benar sebelum melanjutkan
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- EXAM SCREEN -->
+      <div id="examScreen" class="min-h-full hidden">
+        <div class="header-premium sticky top-0 z-40 shadow-lg">
+          <div class="max-w-4xl mx-auto px-4 py-4">
+            <div
+              class="flex justify-between items-start md:items-center gap-4 flex-wrap"
+            >
+              <div>
+                <h2
+                  id="examTitle"
+                  class="text-xl md:text-2xl font-bold text-white"
+                ></h2>
+                <p id="studentInfo" class="text-blue-100 text-sm mt-1"></p>
+              </div>
+              <div class="badge-info px-4 py-2 rounded-lg font-semibold">
+                Soal: <span id="questionCounter"></span>
+              </div>
+            </div>
+            <div class="mt-4 h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div
+                id="progressBar"
+                class="h-full progress-bar transition-all duration-500"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div class="max-w-4xl mx-auto px-4 py-8 pb-12">
+          <div
+            id="examContent"
+            class="card-premium rounded-2xl p-6 md:p-8 shadow-xl animate-fade-in"
+          >
+            <div class="mb-6">
+              <span
+                class="inline-block badge-info px-4 py-2 rounded-lg text-sm font-semibold mb-4"
+              >
+                Soal #<span id="currentNum"></span>
+              </span>
+              <h3
+                id="questionText"
+                class="text-lg md:text-xl text-gray-800 leading-relaxed font-semibold"
+              ></h3>
+            </div>
+            <div class="divider h-px my-6"></div>
+            <div id="optionsContainer" class="space-y-3 mb-8"></div>
+            <div class="flex gap-3 mt-8 pt-6 border-t border-gray-200">
+              <button
+                id="prevBtn"
+                onclick="prevQuestion()"
+                class="btn-secondary flex-1 py-3 px-4 font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                ← Sebelumnya
+              </button>
+              <button
+                id="nextBtn"
+                onclick="nextQuestion()"
+                class="btn-primary flex-1 py-3 px-4 font-semibold rounded-lg"
+              >
+                Selanjutnya →
+              </button>
+              <button
+                id="submitBtn"
+                onclick="submitExam()"
+                class="btn-primary flex-1 py-3 px-4 font-semibold rounded-lg hidden"
+              >
+                📋 Selesai
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- RESULT SCREEN -->
+      <div id="resultScreen" class="min-h-full hidden pb-12">
+        <div class="max-w-5xl mx-auto px-4 py-8">
+          <div
+            class="card-premium rounded-2xl p-8 shadow-2xl animate-fade-in mb-6"
+          >
+            <div class="text-center mb-8">
+              <div
+                class="inline-flex items-center justify-center w-24 h-24 rounded-full mb-6"
+                id="resultIconBox"
+              >
+                <span id="resultIcon" class="text-6xl"></span>
+              </div>
+              <h2 class="text-4xl font-bold text-gray-800 mb-2">
+                Hasil Ujian Anda
+              </h2>
+              <p
+                id="resultStudentName"
+                class="text-xl text-gray-600 font-semibold mb-2"
+              ></p>
+              <p id="scoreDescription" class="text-gray-500 font-medium"></p>
+            </div>
+            <div class="divider h-px my-8"></div>
+            <div
+              class="bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-50 rounded-2xl p-12 mb-8 border border-blue-100 shadow-sm"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center md:col-span-1">
+                  <p
+                    class="text-gray-600 text-xs font-bold tracking-widest mb-4 uppercase"
+                  >
+                    Nilai Akhir
+                  </p>
+                  <div
+                    class="text-7xl font-bold mb-4"
+                    id="scoreDisplay"
+                    style="color: #3b82f6"
+                  ></div>
+                  <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      id="scoreBar"
+                      class="h-full progress-bar transition-all duration-1000"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                </div>
+                <div class="md:col-span-2 grid grid-cols-3 gap-4">
+                  <div class="bg-white rounded-xl p-4 border border-green-100">
+                    <p class="text-xs font-bold text-gray-600 mb-2 uppercase">
+                      Benar
+                    </p>
+                    <p
+                      class="text-4xl font-bold text-green-600"
+                      id="correctCount"
+                    >
+                      0
+                    </p>
+                    <p class="text-xs text-gray-500 mt-2" id="correctPercent">
+                      0%
+                    </p>
+                  </div>
+                  <div class="bg-white rounded-xl p-4 border border-gray-300">
+                    <p class="text-xs font-bold text-gray-600 mb-2 uppercase">
+                      Tidak Dijawab
+                    </p>
+                    <p
+                      class="text-4xl font-bold text-gray-600"
+                      id="unansweredCount"
+                    >
+                      0
+                    </p>
+                    <p
+                      class="text-xs text-gray-500 mt-2"
+                      id="unansweredPercent"
+                    >
+                      0%
+                    </p>
+                  </div>
+                  <div class="bg-white rounded-xl p-4 border border-red-100">
+                    <p class="text-xs font-bold text-gray-600 mb-2 uppercase">
+                      Salah
+                    </p>
+                    <p class="text-4xl font-bold text-red-600" id="wrongCount">
+                      0
+                    </p>
+                    <p class="text-xs text-gray-500 mt-2" id="wrongPercent">
+                      0%
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button
+                onclick="goToMainMenu()"
+                class="flex-1 btn-primary py-4 px-6 font-semibold rounded-lg shadow-lg"
+              >
+                🏠 Kembali ke Menu Utama
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const defaultConfig = {
+        school_name: "Madrasah Aliyah Ar-Ridho",
+        school_motto: "Sistem Ujian & Manajemen Soal",
+        exam_title: "Ujian Semester Gasal",
+      };
+
+      let config = { ...defaultConfig };
+      let allQuestions = [];
+      let currentQuestion = 0;
+      let answers = [];
+      let currentUser = null;
+      let currentSubjectQuestions = [];
+      const optionLetters = ["A", "C", "D", "E"];
+
+      const handler = {
+        onDataChanged(data) {
+          allQuestions = data;
+          updateQuestionList();
+          updateSubjectOptions();
+        },
+      };
+
+      async function initApp() {
+        if (window.elementSdk) {
+          window.elementSdk.init({
+            defaultConfig,
+            onConfigChange: async (newConfig) => {
+              config = { ...defaultConfig, ...newConfig };
+              updateUI();
+            },
+            mapToCapabilities: (cfg) => ({
+              recolorables: [],
+              borderables: [],
+              fontEditable: undefined,
+              fontSizeable: undefined,
+            }),
+            mapToEditPanelValues: (cfg) =>
+              new Map([
+                ["school_name", cfg.school_name || defaultConfig.school_name],
+                [
+                  "school_motto",
+                  cfg.school_motto || defaultConfig.school_motto,
+                ],
+                ["exam_title", cfg.exam_title || defaultConfig.exam_title],
+              ]),
+          });
+        }
+
+        if (window.dataSdk) {
+          const result = await window.dataSdk.init(handler);
+          if (!result.isOk) {
+            console.error("Failed to initialize data SDK");
+          }
+        }
+
+        updateUI();
+      }
+
+      function updateUI() {
+        document.getElementById("schoolName").textContent =
+          config.school_name || defaultConfig.school_name;
+        document.getElementById("schoolMotto").textContent =
+          config.school_motto || defaultConfig.school_motto;
+      }
+
+      function updateQuestionList() {
+        const container = document.getElementById("questionsListContainer");
+        const count = document.getElementById("questionCount");
+
+        count.textContent = allQuestions.length;
+
+        if (allQuestions.length === 0) {
+          container.innerHTML = `
+          <div class="card-premium rounded-2xl p-8 text-center">
+            <p class="text-gray-500 font-medium">📭 Tidak ada soal. <button onclick="goToCreateQuestion()" class="text-blue-600 font-bold hover:underline">Buat soal baru</button></p>
+          </div>
+        `;
+          return;
+        }
+
+        container.innerHTML = allQuestions
+          .map((q, idx) => {
+            const options = JSON.parse(q.options || "[]");
+            const correctIndex = parseInt(q.correct_answer || 0);
+            return `
+          <div class="question-card animate-fade-in" style="animation-delay: ${idx * 0.05}s">
+            <div class="flex justify-between items-start gap-4 mb-4">
+              <div class="flex-1">
+                <div class="badge-info inline-block px-3 py-1 rounded-lg text-xs font-bold mb-2">${q.subject}</div>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">${q.question}</h3>
+              </div>
+            </div>
+
+            <div class="space-y-2 mb-6 ml-4">
+              ${options
+                .map(
+                  (opt, i) => `
+                <div class="text-sm ${i === correctIndex ? "correct-indicator p-2 rounded" : ""}">
+                  <span class="font-medium">${optionLetters[i]}.</span> ${opt}
+                  ${i === correctIndex ? '<span class="ml-2 text-green-600 font-bold">✓ BENAR</span>' : ""}
+                </div>
+              `,
+                )
+                .join("")}
+            </div>
+
+            <div class="flex gap-2">
+              <button onclick="deleteQuestion('${q.__backendId}')" class="btn-delete flex-1 py-2 px-4 font-semibold rounded-lg text-sm">
+                🗑️ Hapus
+              </button>
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      function updateSubjectOptions() {
+        const subjects = [
+          ...new Set(allQuestions.map((q) => q.subject)),
+        ].sort();
+        const subjectSelect = document.getElementById("examSubject");
+
+        subjectSelect.innerHTML =
+          '<option value="">Pilih Mata Pelajaran</option>';
+
+        subjects.forEach((subject) => {
+          const option = document.createElement("option");
+          option.value = subject;
+          option.textContent = subject;
+          subjectSelect.appendChild(option);
+        });
+
+        if (subjects.length === 0) {
+          const option = document.createElement("option");
+          option.value = "";
+          option.textContent = "Tidak ada soal tersedia";
+          option.disabled = true;
+          subjectSelect.appendChild(option);
+          subjectSelect.disabled = true;
+        } else {
+          subjectSelect.disabled = false;
+        }
+      }
+
+      document
+        .getElementById("createQuestionForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const subject = document.getElementById("createSubject").value;
+          const question = document.getElementById("createQuestion").value;
+          const options = Array.from(
+            document.querySelectorAll(".option-input"),
+          ).map((input) => input.value);
+          const correctAnswer = parseInt(
+            document.querySelector('input[name="correctAnswer"]:checked').value,
+          );
+
+          if (!window.dataSdk) {
+            alert("Data SDK tidak tersedia");
+            return;
+          }
+
+          document
+            .getElementById("createLoadingSpinner")
+            .classList.remove("hidden");
+
+          const result = await window.dataSdk.create({
+            question: question,
+            options: JSON.stringify(options),
+            correct_answer: correctAnswer.toString(),
+            subject: subject,
+            created_at: new Date().toISOString(),
+          });
+
+          document
+            .getElementById("createLoadingSpinner")
+            .classList.add("hidden");
+
+          if (result.isOk) {
+            document.getElementById("createQuestionForm").reset();
+            const successMsg = document.createElement("div");
+            successMsg.className =
+              "fixed top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in";
+            successMsg.innerHTML = "✅ Soal berhasil disimpan!";
+            document.body.appendChild(successMsg);
+            setTimeout(() => successMsg.remove(), 3000);
+            setTimeout(() => goToMainMenu(), 1500);
+          } else {
+            const errorMsg = document.createElement("div");
+            errorMsg.className =
+              "fixed top-4 left-1/2 -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in";
+            errorMsg.innerHTML = "❌ Gagal menyimpan soal!";
+            document.body.appendChild(errorMsg);
+            setTimeout(() => errorMsg.remove(), 3000);
+          }
+        });
+
+      async function deleteQuestion(id) {
+        const q = allQuestions.find((x) => x.__backendId === id);
+        if (!q) return;
+
+        const confirmed = confirm(
+          `Apakah Anda yakin ingin menghapus soal ini?`,
+        );
+        if (!confirmed) return;
+
+        if (!window.dataSdk) return;
+
+        const result = await window.dataSdk.delete(q);
+        if (result.isOk) {
+          const successMsg = document.createElement("div");
+          successMsg.className =
+            "fixed top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in";
+          successMsg.innerHTML = "✅ Soal berhasil dihapus!";
+          document.body.appendChild(successMsg);
+          setTimeout(() => successMsg.remove(), 3000);
+        }
+      }
+
+      function goToMainMenu() {
+        document.getElementById("mainMenuScreen").classList.remove("hidden");
+        document.getElementById("createQuestionScreen").classList.add("hidden");
+        document.getElementById("manageQuestionScreen").classList.add("hidden");
+        document.getElementById("examScreen").classList.add("hidden");
+        document.getElementById("loginExamScreen").classList.add("hidden");
+        document.getElementById("resultScreen").classList.add("hidden");
+      }
+
+      function goToCreateQuestion() {
+        document.getElementById("mainMenuScreen").classList.add("hidden");
+        document
+          .getElementById("createQuestionScreen")
+          .classList.remove("hidden");
+        document.getElementById("manageQuestionScreen").classList.add("hidden");
+      }
+
+      function goToManageQuestion() {
+        document.getElementById("mainMenuScreen").classList.add("hidden");
+        document
+          .getElementById("manageQuestionScreen")
+          .classList.remove("hidden");
+        document.getElementById("createQuestionScreen").classList.add("hidden");
+      }
+
+      function goToExam() {
+        const subjects = [...new Set(allQuestions.map((q) => q.subject))];
+
+        if (subjects.length === 0) {
+          alert("❌ Belum ada soal! Buat soal terlebih dahulu.");
+          return;
+        }
+
+        document.getElementById("mainMenuScreen").classList.add("hidden");
+        document.getElementById("loginExamScreen").classList.remove("hidden");
+      }
+
+      document
+        .getElementById("loginExamForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById("examUsername").value.trim();
+          const subject = document.getElementById("examSubject").value;
+          const className = document.getElementById("examClass").value;
+
+          if (!username || !subject || !className) return;
+
+          const filteredQuestions = allQuestions.filter(
+            (q) => q.subject === subject,
+          );
+
+          if (filteredQuestions.length === 0) {
+            alert("❌ Tidak ada soal untuk mata pelajaran ini!");
+            return;
+          }
+
+          currentUser = { username, className, subject };
+          currentSubjectQuestions = filteredQuestions;
+          answers = new Array(currentSubjectQuestions.length).fill(null);
+          currentQuestion = 0;
+
+          document.getElementById("loginExamScreen").classList.add("hidden");
+          document.getElementById("examScreen").classList.remove("hidden");
+
+          document.getElementById("examTitle").textContent =
+            `${config.exam_title || "Ujian"} - ${subject}`;
+          document.getElementById("studentInfo").textContent =
+            `${currentUser.username} • ${currentUser.className}`;
+
+          renderQuestion();
+        });
+
+      function renderQuestion() {
+        if (!currentSubjectQuestions || currentSubjectQuestions.length === 0)
+          return;
+
+        const q = currentSubjectQuestions[currentQuestion];
+        const options = JSON.parse(q.options || "[]");
+        const total = currentSubjectQuestions.length;
+
+        document.getElementById("questionCounter").textContent =
+          `${currentQuestion + 1}/${total}`;
+        document.getElementById("currentNum").textContent = currentQuestion + 1;
+        document.getElementById("questionText").textContent = q.question;
+        document.getElementById("progressBar").style.width =
+          `${((currentQuestion + 1) / total) * 100}%`;
+
+        const container = document.getElementById("optionsContainer");
+        container.innerHTML = "";
+
+        options.forEach((opt, idx) => {
+          const btn = document.createElement("button");
+          btn.className = `option-btn w-full text-left p-4 rounded-lg ${answers[currentQuestion] === idx ? "selected" : ""}`;
+          btn.textContent = `${optionLetters[idx]}. ${opt}`;
+          btn.onclick = () => selectOption(idx);
+          container.appendChild(btn);
+        });
+
+        document.getElementById("prevBtn").disabled = currentQuestion === 0;
+
+        if (currentQuestion === total - 1) {
+          document.getElementById("nextBtn").classList.add("hidden");
+          document.getElementById("submitBtn").classList.remove("hidden");
+        } else {
+          document.getElementById("nextBtn").classList.remove("hidden");
+          document.getElementById("submitBtn").classList.add("hidden");
+        }
+      }
+
+      function selectOption(idx) {
+        answers[currentQuestion] = idx;
+        renderQuestion();
+      }
+
+      function nextQuestion() {
+        if (currentQuestion < currentSubjectQuestions.length - 1) {
+          currentQuestion++;
+          renderQuestion();
+        }
+      }
+
+      function prevQuestion() {
+        if (currentQuestion > 0) {
+          currentQuestion--;
+          renderQuestion();
+        }
+      }
+
+      function submitExam() {
+        let correct = 0;
+        let wrong = 0;
+
+        currentSubjectQuestions.forEach((q, idx) => {
+          const correctIdx = parseInt(q.correct_answer || 0);
+          if (answers[idx] === correctIdx) {
+            correct++;
+          } else {
+            wrong++;
+          }
+        });
+
+        const score = Math.round(
+          (correct / currentSubjectQuestions.length) * 100,
+        );
+        showResult(correct, wrong, score);
+      }
+
+      function showResult(correct, wrong, score) {
+        document.getElementById("examScreen").classList.add("hidden");
+        document.getElementById("resultScreen").classList.remove("hidden");
+
+        const total = currentSubjectQuestions.length;
+        const correctPercent = Math.round((correct / total) * 100);
+        const wrongPercent = Math.round((wrong / total) * 100);
+
+        document.getElementById("resultStudentName").textContent =
+          currentUser.username;
+        document.getElementById("scoreDisplay").textContent = score;
+        document.getElementById("scoreBar").style.width = score + "%";
+
+        document.getElementById("correctCount").textContent = correct;
+        document.getElementById("wrongCount").textContent = wrong;
+        document.getElementById("unansweredCount").textContent = 0;
+        document.getElementById("correctPercent").textContent =
+          correctPercent + "%";
+        document.getElementById("wrongPercent").textContent =
+          wrongPercent + "%";
+        document.getElementById("unansweredPercent").textContent = "0%";
+
+        const resultIcon = document.getElementById("resultIcon");
+        const resultIconBox = document.getElementById("resultIconBox");
+
+        if (score >= 85) {
+          resultIconBox.className =
+            "inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 bg-gradient-to-br from-green-100 to-emerald-100";
+          resultIcon.textContent = "🏆";
+          document.getElementById("scoreDescription").textContent =
+            "Luar Biasa! Nilai Anda Sangat Memuaskan";
+        } else if (score >= 70) {
+          resultIconBox.className =
+            "inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 bg-gradient-to-br from-blue-100 to-cyan-100";
+          resultIcon.textContent = "✅";
+          document.getElementById("scoreDescription").textContent =
+            "Bagus! Anda Telah Memahami Materi Dengan Baik";
+        } else if (score >= 60) {
+          resultIconBox.className =
+            "inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 bg-gradient-to-br from-yellow-100 to-orange-100";
+          resultIcon.textContent = "👍";
+          document.getElementById("scoreDescription").textContent =
+            "Cukup Baik, Terus Tingkatkan Belajar Anda";
+        } else {
+          resultIconBox.className =
+            "inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 bg-gradient-to-br from-red-100 to-pink-100";
+          resultIcon.textContent = "📚";
+          document.getElementById("scoreDescription").textContent =
+            "Anda Perlu Belajar Lebih Giat Lagi";
+        }
+      }
+
+      initApp();
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'9cda12063700b5dc',t:'MTc3MTA0NTk0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
